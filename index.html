@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -59,6 +60,7 @@
       <div id="blocks" class="grid" style="margin-top:10px"></div>
       <div class="flex" style="margin-top:8px">
         <button class="btn" id="markDoneBtn">지금 블록 완료</button>
+        <button class="btn secondary" id="startWorkRoutineBtn">🚀 작업 시작</button>
         <button class="btn ghost" id="exportCSV">기록 CSV</button>
         <button class="btn ghost" id="downloadICS">주간 .ics</button>
       </div>
@@ -112,7 +114,6 @@ const dayBlocks = [
   {label:"취침", start:"23:00", end:"23:59", key:"sleep"}
 ];
 
-// Updated workouts (스쿼트 추가)
 const templates = {
   1:{title:"월 — 푸시(고중량)", items:["백 스쿼트 4×5 (RPE 8~9)","벤치프레스 4×6","오버헤드 프레스 3×6~8","인클라인 덤벨프레스 3×8~10","딥스 2~3×6~8","오버헤드 트라이셉스 익스텐션 2×10"]},
   2:{title:"화 — 풀(고중량)", items:["루마니안 데드리프트 3~4×5~6","턱걸이(가중) 4×6~8","바벨/덤벨 로우 3×8~10","페이스풀 3×12","해머컬 3×10"]},
@@ -140,7 +141,6 @@ function pctOf(a,b,c){ return Math.max(0, Math.min(100, ((a-b)/(c-b))*100 )); }
 
 // ===== Google Calendar helper =====
 function openGCal(title, startDate, endDate, details=""){
-  // dates format: YYYYMMDDTHHMMSS/YYYYMMDDTHHMMSS (local time)
   const pad=n=>String(n).padStart(2,'0');
   const fmt=(d)=>`${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
   const url = new URL("https://calendar.google.com/calendar/render");
@@ -309,6 +309,16 @@ document.getElementById("markDoneBtn").onclick = ()=>{
   renderBlocks(); renderHistory();
 };
 
+// (추가됨) 작업 시작 버튼 스크립트
+document.getElementById("startWorkRoutineBtn").onclick = ()=>{
+  const videoUrl = "https://www.youtube.com/watch?v=gHLTEx\_kcfE";
+  const musicUrl = "https://music.youtube.com/watch?v=RB-RcX5DS5A\&list=RDAMVMyKNxeF4KMsY";
+  
+  // 새 탭에서 두 개의 링크를 엽니다.
+  window.open(videoUrl, "_blank");
+  window.open(musicUrl, "_blank");
+};
+
 // History
 function renderHistory(){
   const data = store.load();
@@ -360,7 +370,6 @@ document.getElementById("downloadICS").onclick = ()=>{
   const t=(hm)=>hm.replace(":","")+"00";
   const today=new Date();
   const weekday=today.getDay();
-  // Find Monday of this week to anchor BYDAY rules (not strictly needed for weekly rules)
   const monday = new Date(today); monday.setDate(today.getDate() - ((weekday+6)%7));
   let ics = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Routine Dashboard//KR//\r\n";
   dayBlocks.forEach(b=>{
@@ -393,3 +402,4 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
+```
