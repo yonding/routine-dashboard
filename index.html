@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -35,7 +34,7 @@
   .tag{font-size:12px; color:#b9c2ff}
   .flex{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
   .section-title{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px}
-  input[type="number"], input[type="text"], select{
+  input[type="number"], input[type]="text"], select{
     background:#1d2240; color:#eaf0ff; border:1px solid #303761; border-radius:10px; padding:8px 10px; width:100%;
   }
   .table{width:100%; border-collapse:collapse; font-size:14px}
@@ -60,33 +59,44 @@
       <div id="blocks" class="grid" style="margin-top:10px"></div>
       <div class="flex" style="margin-top:8px">
         <button class="btn" id="markDoneBtn">지금 블록 완료</button>
-        <button class="btn secondary" id="startWorkRoutineBtn">🚀 작업 시작</button>
         <button class="btn ghost" id="exportCSV">기록 CSV</button>
         <button class="btn ghost" id="downloadICS">주간 .ics</button>
       </div>
       <div class="tiny muted" style="margin-top:6px">완료 시각이 자동 기록됩니다. 각 블록 오른쪽의 📅 버튼으로 Google Calendar에 바로 추가할 수 있어요.</div>
     </section>
 
-    <section class="card">
-      <div class="section-title">
-        <div>
-          <div class="muted tiny">오늘의 운동</div>
-          <div id="todayWorkoutTitle" style="font-size:18px; font-weight:700">-</div>
+    <div class="grid">
+      <section class="card">
+        <div class="section-title">
+          <div style="font-size:18px; font-weight:700">🚀 작업 루틴</div>
         </div>
-        <div class="pill" id="weekdayPill">-</div>
-      </div>
-      <div id="workoutList" class="grid"></div>
-      <div class="flex" style="margin-top:10px">
-        <button class="btn secondary" id="addSet">세트 추가</button>
-        <button class="btn ghost" id="copyLast">지난 기록 불러오기</button>
-        <button class="btn ghost" id="startVoice">🎤 음성 로그</button>
-      </div>
-      <table class="table" style="margin-top:10px">
-        <thead><tr><th>운동</th><th>kg</th><th>reps</th><th>세트</th><th>시간</th></tr></thead>
-        <tbody id="logBody"></tbody>
-      </table>
-      <div class="tiny muted">음성 예시: “벤치 80 6”, “로우 60 10”. (지원 브라우저에서만)</div>
-    </section>
+        <div class="grid">
+          <button class="btn secondary" id="startWorkRoutineBtn">유튜브 영상 + 뮤직 켜기</button>
+        </div>
+        <div class="tiny muted" style="margin-top:6px">오토바이 주행 영상과 유튜브 뮤직을 새 탭에서 엽니다.</div>
+      </section>
+
+      <section class="card">
+        <div class="section-title">
+          <div>
+            <div class="muted tiny">오늘의 운동</div>
+            <div id="todayWorkoutTitle" style="font-size:18px; font-weight:700">-</div>
+          </div>
+          <div class="pill" id="weekdayPill">-</div>
+        </div>
+        <div id="workoutList" class="grid"></div>
+        <div class="flex" style="margin-top:10px">
+          <button class="btn secondary" id="addSet">세트 추가</button>
+          <button class="btn ghost" id="copyLast">지난 기록 불러오기</button>
+          <button class="btn ghost" id="startVoice">🎤 음성 로그</button>
+        </div>
+        <table class="table" style="margin-top:10px">
+          <thead><tr><th>운동</th><th>kg</th><th>reps</th><th>세트</th><th>시간</th></tr></thead>
+          <tbody id="logBody"></tbody>
+        </table>
+        <div class="tiny muted">음성 예시: “벤치 80 6”, “로우 60 10”. (지원 브라우저에서만)</div>
+      </section>
+    </div>
   </div>
 
   <section class="card" style="margin-top:12px">
@@ -402,4 +412,3 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
-```
