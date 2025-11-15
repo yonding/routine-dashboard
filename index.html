@@ -34,7 +34,7 @@
   .tag{font-size:12px; color:#b9c2ff}
   .flex{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
   .section-title{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px}
-  input[type="number"], input[type]="text"], select{
+  input[type="number"], input[type="text"], select{
     background:#1d2240; color:#eaf0ff; border:1px solid #303761; border-radius:10px; padding:8px 10px; width:100%;
   }
   .table{width:100%; border-collapse:collapse; font-size:14px}
@@ -60,9 +60,8 @@
       <div class="flex" style="margin-top:8px">
         <button class="btn" id="markDoneBtn">지금 블록 완료</button>
         <button class="btn ghost" id="exportCSV">기록 CSV</button>
-        <button class="btn ghost" id="downloadICS">주간 .ics</button>
       </div>
-      <div class="tiny muted" style="margin-top:6px">완료 시각이 자동 기록됩니다. 각 블록 오른쪽의 📅 버튼으로 Google Calendar에 바로 추가할 수 있어요.</div>
+      <div class="tiny muted" style="margin-top:6px">완료 시각이 자동 기록됩니다.</div>
     </section>
 
     <div class="grid">
@@ -88,13 +87,11 @@
         <div class="flex" style="margin-top:10px">
           <button class="btn secondary" id="addSet">세트 추가</button>
           <button class="btn ghost" id="copyLast">지난 기록 불러오기</button>
-          <button class="btn ghost" id="startVoice">🎤 음성 로그</button>
         </div>
         <table class="table" style="margin-top:10px">
           <thead><tr><th>운동</th><th>kg</th><th>reps</th><th>세트</th><th>시간</th></tr></thead>
           <tbody id="logBody"></tbody>
         </table>
-        <div class="tiny muted">음성 예시: “벤치 80 6”, “로우 60 10”. (지원 브라우저에서만)</div>
       </section>
     </div>
   </div>
@@ -109,7 +106,7 @@
 
 <script>
 // ===== Config =====
-const dayBlocks = [
+const dayBlocks0= [
   {label:"기상·물·스트레칭", start:"07:00", end:"07:15", key:"wake"},
   {label:"아침 운동 (웨이트+유산소)", start:"07:15", end:"08:45", key:"train"},
   {label:"샤워·정리", start:"08:45", end:"09:30", key:"prep"},
@@ -124,15 +121,79 @@ const dayBlocks = [
   {label:"취침", start:"23:00", end:"23:59", key:"sleep"}
 ];
 
+const dayBlocks = [
+  {label:"기상", start:"07:30", end:"07:45", key:"wake"},
+  {label:"아침 운동", start:"07:45", end:"9:00", key:"train"},
+  {label:"샤워·출근", start:"09:00", end:"09:30", key:"prep"},
+  {label:"아침식사(계란2개·요거트·그래놀라)", start:"09:30", end:"10:00", key:"protein"},
+  {label:"Deep Work I (논문읽기)", start:"10:00", end:"12:30", key:"deep1"},
+  {label:"점심식사(닭가슴살)·산책", start:"12:30", end:"13:30", key:"lunch"},
+  {label:"Deep Work II (연구)", start:"13:30", end:"18:30", key:"work"},
+  {label:"저녁식사(닭가슴살)·산책", start:"18:30", end:"19:30", key:"dinner"},
+  {label:"Deep Work III (코딩)", start:"19:30", end:"23:30", key:"deep2"},
+  {label:"퇴근", start:"23:30", end:"24:00", key:"walk"},
+  {label:"취침 준비", start:"24:00", end:"24:30", key:"prebed"},
+  {label:"기도·취침", start:"24:30", end:"25:00", key:"sleep"}
+];
 const templates = {
-  1:{title:"월 — 푸시(고중량)", items:["백 스쿼트 4×5 (RPE 8~9)","벤치프레스 4×6","오버헤드 프레스 3×6~8","인클라인 덤벨프레스 3×8~10","딥스 2~3×6~8","오버헤드 트라이셉스 익스텐션 2×10"]},
-  2:{title:"화 — 풀(고중량)", items:["루마니안 데드리프트 3~4×5~6","턱걸이(가중) 4×6~8","바벨/덤벨 로우 3×8~10","페이스풀 3×12","해머컬 3×10"]},
-  4:{title:"목 — 푸시(대사성)", items:["프런트/고블릿 스쿼트 3×10 (RPE 7)","인클라인 벤치프레스 3~4×8~10 (드롭세트)","덤벨 숄더프레스 3×10~12 (마이오레프)","푸시업 3×12~15","케이블 플라이 3×15","로프 푸시다운 2~3×12~15"]},
-  5:{title:"금 — 풀(대사성)", items:["RDL(중량↓) 3×10","풀다운 3×12~15","인버티드 로우 3×12","페이스풀 3×15","인클라인 덤벨컬 3×12~15"]},
-  6:{title:"토 — 회복 유산소", items:["빠른 걷기/자전거/하이킹 30~40분","스트레칭 10분"]},
-  0:{title:"일 — 휴식", items:["가벼운 산책 20분","수면 리듬 유지"]},
-  3:{title:"수 — 회복/자유", items:["스트레칭·산책 20분","컨디션에 따라 휴식"]}
+  1:{
+    title:"월 — 하체·엉덩이 A (40분)",
+    items:[
+      "레그프레스 3×12",
+      "고블릿 스쿼트 2×10",
+      "덤벨 RDL 2×10",
+      "레그컬 2×12",
+      "힙어브덕션 2×15",
+      "힙브릿지 2×12"
+    ]
+  },
+
+  2:{
+    title:"화 — 상체 A (등·가슴·어깨)",
+    items:[
+      "랫풀다운 3×12",
+      "시티드 로우 2×12",
+      "체스트 프레스 머신 2×12",
+      "숄더 프레스 머신 2×10",
+      "덤벨 암컬 1×12",
+      "트라이셉스 로프푸시다운 1×12"
+    ]
+  },
+
+  3:{
+    title:"수 — 회복/가벼운 전신",
+    items:[
+      "스텝업 2×12",
+      "스미스 스쿼트 가볍게 2×12",
+      "백 익스텐션 2×12",
+      "플랭크 40초 ×2",
+      "데드버그 2×12"
+    ]
+  },
+
+  4:{
+    title:"목 — 하체·엉덩이 B (40분)",
+    items:[
+      "덤벨 RDL (중량↑) 3×10",
+      "레그프레스(힙 집중) 2×12",
+      "런지 혹은 레그익스텐션 2×12",
+      "힙어브덕터 2×15",
+      "케이블 킥백 1×12"
+    ]
+  },
+
+  5:{
+    title:"금 — 상체 B (등 중심)",
+    items:[
+      "랫풀다운 2×12",
+      "또는 시티드로우 2×10",
+      "체스트프레스 2×12",
+      "덤벨 숄더프레스 1~2×10",
+      "페이스풀 1×15"
+    ]
+  }
 };
+
 
 // ===== Storage helpers =====
 const store = {
@@ -148,20 +209,6 @@ function parseTime(hm){
   const d=new Date(); d.setHours(h, m, 0, 0); return d;
 }
 function pctOf(a,b,c){ return Math.max(0, Math.min(100, ((a-b)/(c-b))*100 )); }
-
-// ===== Google Calendar helper =====
-function openGCal(title, startDate, endDate, details=""){
-  const pad=n=>String(n).padStart(2,'0');
-  const fmt=(d)=>`${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
-  const url = new URL("https://calendar.google.com/calendar/render");
-  url.searchParams.set("action","TEMPLATE");
-  url.searchParams.set("text", title);
-  url.searchParams.set("dates", `${fmt(startDate)}/${fmt(endDate)}`);
-  if(details) url.searchParams.set("details", details);
-  url.searchParams.set("sf","true");
-  url.searchParams.set("output","xml");
-  window.open(url.toString(), "_blank");
-}
 
 // ===== Render blocks =====
 function renderBlocks(){
@@ -194,7 +241,6 @@ function renderBlocks(){
         <div class="tiny ${done?'success':'muted'}">${done?'완료됨':'미완료'}</div>
       </div>
       <div class="flex">
-        <button class="btn ghost" data-addgcal="${b.key}">📅</button>
         <button class="btn ${done?'secondary':'ghost'}" data-key="${b.key}">${done?'완료 취소':'완료'}</button>
       </div>
     `;
@@ -209,14 +255,10 @@ function renderBlocks(){
       }
       store.save(data); renderBlocks(); renderHistory();
     };
-    div.querySelector("[data-addgcal]").onclick = ()=>{
-      const start = parseTime(b.start), end = parseTime(b.end);
-      openGCal(b.label, start, end, "루틴 대시보드에서 추가됨");
-    };
     container.appendChild(div);
   });
 
-  const nowLabel = activeIndex>=0 ? dayBlocks[activeIndex].label : "휴식/자유 시간";
+  const nowLabel = activeIndex>=0 ? dayBlocks[activeIndex].label : "휴식";
   document.getElementById("nowLabel").textContent = nowLabel;
 }
 
@@ -225,7 +267,7 @@ function renderWorkout(){
   const wd = new Date().getDay();
   const t = templates[wd];
   document.getElementById("weekdayPill").textContent = ["일","월","화","수","목","금","토"][wd];
-  document.getElementById("todayWorkoutTitle").textContent = t ? t.title : "오늘: 자유 / 회복";
+  document.getElementById("todayWorkoutTitle").textContent = t ? t.title : "오늘: 휴식";
   const list = document.getElementById("workoutList");
   list.innerHTML = "";
   (t?.items||[]).forEach(txt=>{
@@ -275,23 +317,6 @@ document.getElementById("copyLast").onclick = ()=>{
 
 // Voice logging
 let recognizing=false, recog;
-document.getElementById("startVoice").onclick = ()=>{
-  if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)){
-    alert("이 브라우저는 음성 인식을 지원하지 않습니다."); return;
-  }
-  const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
-  recog = new SR(); recog.lang='ko-KR'; recog.interimResults=false; recog.maxAlternatives=1;
-  recog.onresult=(e)=>{
-    const s = e.results[0][0].transcript.trim();
-    const parts = s.split(/\s+/);
-    const name = parts[0]; const kg = Number(parts[1]); const reps = Number(parts[2]);
-    if(name && !isNaN(kg) && !isNaN(reps)){ addLog({name, kg, reps, sets:1}); }
-    else { alert("인식: "+s+"  (형식: '벤치 80 6')"); }
-  };
-  recog.onerror=(e)=>alert("음성 인식 오류: "+e.error);
-  recog.onend=()=> recognizing=false;
-  recognizing=true; recog.start();
-};
 
 // Auto-log via URL (for NFC/Shortcuts): ?add=벤치프레스&kg=80&reps=6
 (function(){
@@ -319,17 +344,11 @@ document.getElementById("markDoneBtn").onclick = ()=>{
   renderBlocks(); renderHistory();
 };
 
-// (추가됨) 작업 시작 버튼 스크립트
 document.getElementById("startWorkRoutineBtn").onclick = ()=>{
-  const videoUrl = "https://www.youtube.com/watch?v=gHLTEx\_kcfE";
-  const musicUrl = "https://music.youtube.com/watch?v=RB-RcX5DS5A\&list=RDAMVMyKNxeF4KMsY";
-  
-  // 새 탭에서 두 개의 링크를 엽니다.
+  const videoUrl = "https://www.youtube.com/channel/UCdBDazT4stViix4CJ0dE26g";
   window.open(videoUrl, "_blank");
-  window.open(musicUrl, "_blank");
 };
 
-// History
 function renderHistory(){
   const data = store.load();
   const tkey = todayKey();
@@ -370,33 +389,6 @@ document.getElementById("exportCSV").onclick = ()=>{
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url; a.download = "routine_logs.csv"; a.click();
-  URL.revokeObjectURL(url);
-};
-
-// Export ICS (weekly recurring schedule)
-document.getElementById("downloadICS").onclick = ()=>{
-  const pad=n=>String(n).padStart(2,'0');
-  const dt=(d)=>`${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
-  const t=(hm)=>hm.replace(":","")+"00";
-  const today=new Date();
-  const weekday=today.getDay();
-  const monday = new Date(today); monday.setDate(today.getDate() - ((weekday+6)%7));
-  let ics = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Routine Dashboard//KR//\r\n";
-  dayBlocks.forEach(b=>{
-    const s=parseTime(b.start), e=parseTime(b.end);
-    const uid = `${b.key}-${Date.now()}@routine`;
-    ics += "BEGIN:VEVENT\r\n";
-    ics += `UID:${uid}\r\n`;
-    ics += `SUMMARY:${b.label}\r\n`;
-    ics += `DTSTART:${dt(today)}T${t(b.start)}\r\n`;
-    ics += `DTEND:${dt(today)}T${t(b.end)}\r\n`;
-    ics += "RRULE:FREQ=WEEKLY\r\n";
-    ics += "END:VEVENT\r\n";
-  });
-  ics += "END:VCALENDAR\r\n";
-  const blob = new Blob([ics], {type:"text/calendar;charset=utf-8;"});
-  const url = URL.createObjectURL(blob);
-  const a=document.createElement("a"); a.href=url; a.download="routine_weekly.ics"; a.click();
   URL.revokeObjectURL(url);
 };
 
